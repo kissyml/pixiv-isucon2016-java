@@ -113,7 +113,7 @@ public class Application {
                 ext = ".gif";
             }
 
-            return "/image/" + id + ext;
+            return "image/" + id + ext;
         }
     }
 
