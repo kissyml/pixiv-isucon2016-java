@@ -11,6 +11,7 @@ import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import javax.sound.midi.Soundbank;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -536,8 +537,6 @@ public class Application {
                 args += postIds.get(i);
             }
 
-            System.out.println(args);
-
             try (Connection connection = sql2o.open()) {
                 commentedCount = connection.createQuery("SELECT COUNT(*) FROM comments WHERE post_id IN (" + args + ")")
                         .executeScalar(Integer.class);
@@ -553,6 +552,7 @@ public class Application {
         model.put("post_count", postCount);
         model.put("comment_count", commentCount);
         model.put("commented_count", commentedCount);
+        model.put("csrf_token", getCSRFToken(request));
         model.put("me", me);
         model.put("content", "user");
 
@@ -644,8 +644,6 @@ public class Application {
             halt();
         }
 
-        System.out.println("logged in");
-
         MultipartConfigElement multipartConfigElement = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
         request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
 
@@ -672,14 +670,9 @@ public class Application {
             halt(HttpStatus.UNPROCESSABLE_ENTITY_422);
         }
 
-        System.out.println("csrf: " + csrfToken);
-        System.out.println(getCSRFToken(request));
-
         if (!csrfToken.equals(getCSRFToken(request))) {
             halt(HttpStatus.UNPROCESSABLE_ENTITY_422);
         }
-
-        System.out.println("csrf ok");
 
         if (file == null) {
             Session session = getSession(request);
@@ -689,15 +682,10 @@ public class Application {
             halt();
         }
 
-        System.out.println("file found");
-
         String mime = "";
 
         if (file != null) {
             String contentType = file.getContentType();
-            System.out.println(contentType);
-            System.out.println(file.getName());
-            System.out.println(file.getSubmittedFileName());
             if (contentType.contains("jpeg")) {
                 mime = "image/jpeg";
             } else if (contentType.contains("png")) {
