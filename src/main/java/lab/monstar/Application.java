@@ -84,8 +84,8 @@ public class Application {
         Integer id;
         String account_name;
         String passhash;
-        Integer authority;
-        Integer del_flg;
+        Boolean authority;
+        Boolean del_flg;
         Date created_at;
     }
 
@@ -132,8 +132,8 @@ public class Application {
             Arrays.asList("DELETE FROM users WHERE id > 1000",
                     "DELETE FROM posts WHERE id > 10000",
                     "DELETE FROM comments WHERE id > 100000",
-                    "UPDATE users SET del_flg = 0",
-                    "UPDATE users SET del_flg = 1 WHERE id % 50 = 0")
+                    "UPDATE users SET del_flg = false",
+                    "UPDATE users SET del_flg = true WHERE id % 50 = 0")
                     .forEach((str) -> {
                         connection.createQuery(str).executeUpdate();
                     });
@@ -145,7 +145,7 @@ public class Application {
         User user;
         try (Connection connection = sql2o.open()) {
             user = connection
-                    .createQuery("SELECT * FROM users WHERE account_name = :account_name and del_flg = 0")
+                    .createQuery("SELECT * FROM users WHERE account_name = :account_name and del_flg = false")
                     .addParameter("account_name", accountName)
                     .executeAndFetchFirst(User.class);
         }
@@ -272,7 +272,7 @@ public class Application {
 
                 post.csrf_token = csrfToken;
 
-                if (post.user.del_flg == 0) {
+                if (!post.user.del_flg) {
                     posts.add(post);
                 }
 
@@ -473,7 +473,7 @@ public class Application {
         User user = new User();
 
         try (Connection connection = sql2o.open()) {
-            user = connection.createQuery("SELECT * FROM users WHERE account_name = :account_name AND del_flg = 0")
+            user = connection.createQuery("SELECT * FROM users WHERE account_name = :account_name AND del_flg = false")
                     .addParameter("account_name", accountName)
                     .executeAndFetchFirst(User.class);
         } catch (Exception e) {
@@ -848,13 +848,13 @@ public class Application {
             halt();
         }
 
-        if (me.authority == 0) {
+        if (!me.authority) {
             halt(HttpStatus.FORBIDDEN_403);
         }
 
         List<User> users = new ArrayList<>();
         try (Connection connection = sql2o.open()) {
-            users = connection.createQuery("SELECT * FROM users WHERE authority = 0 AND del_flg = 0 ORDER BY created_at DESC")
+            users = connection.createQuery("SELECT * FROM users WHERE authority = false AND del_flg = false ORDER BY created_at DESC")
                     .executeAndFetch(User.class);
         } catch (Exception e) {
             e.printStackTrace();
@@ -878,7 +878,7 @@ public class Application {
             halt();
         }
 
-        if (me.authority == 0) {
+        if (!me.authority) {
             halt(HttpStatus.FORBIDDEN_403);
         }
 
@@ -903,7 +903,7 @@ public class Application {
         try (Connection connection = sql2o.beginTransaction()) {
             for (String uid : uids) {
                 connection.createQuery("UPDATE users SET del_flg = :del_flg WHERE id = :id")
-                        .addParameter("del_flg", 1)
+                        .addParameter("del_flg", true)
                         .addParameter("id", uid)
                         .executeUpdate();
             }
