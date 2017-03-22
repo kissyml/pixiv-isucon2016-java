@@ -103,7 +103,7 @@ public class Application {
         String csrf_token;
 
         public String formatDate() {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
             return format.format(created_at);
         }
@@ -573,7 +573,7 @@ public class Application {
 
         Date date = null;
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").parse(maxCreatedAt);
+            date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX").parse(maxCreatedAt);
         } catch (Exception e) {
             e.printStackTrace();
             halt(HttpStatus.BAD_REQUEST_400);
