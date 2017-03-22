@@ -11,7 +11,6 @@ import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import javax.sound.midi.Soundbank;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -102,6 +101,12 @@ public class Application {
         Comment[] comments;
         User user;
         String csrf_token;
+
+        public String formatDate() {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+            format.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
+            return format.format(created_at);
+        }
 
         public String imageURL() {
             String ext = "";

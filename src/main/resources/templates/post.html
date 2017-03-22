@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div class="isu-post" th:fragment="post" th:id="${'pid_' + post.id}" th:attr="data-created-at=${post.created_at}">
+<div class="isu-post" th:fragment="post" th:id="${'pid_' + post.id}" th:attr="data-created-at=${post.formatDate()}">
     <div class="isu-post-header">
         <a th:href="@{${baseUrl} + '@' + ${post.user.account_name}}" class="isu-post-account-name" th:text="${post.user.account_name}"></a>
         <a th:href="@{${baseUrl} + 'posts/' + ${post.id}}" class="isu-post-permalink">
