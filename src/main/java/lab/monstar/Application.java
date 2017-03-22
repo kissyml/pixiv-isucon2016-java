@@ -59,10 +59,10 @@ public class Application {
     }
 
     Application() {
-        Spark.ipAddress("127.0.0.1");
-        Spark.port(8080);
+//        Spark.ipAddress("127.0.0.1");
+//        Spark.port(8080);
         Spark.staticFileLocation("/public");
-        get("/initialize", this::getInitialize, new ThymeleafTemplateEngine());
+        get("/initialize", this::getInitialize);
         get("/login", this::getLogin);
         post("/login", this::postLogin);
         get("/register", this::getRegister);
@@ -313,10 +313,10 @@ public class Application {
         return sb.toString();
     }
 
-    private ModelAndView getInitialize(Request request, Response response) {
+    private String getInitialize(Request request, Response response) {
         dbInitialize();
         response.status(HttpStatus.OK_200);
-        return new ModelAndView(null, "");
+        return "";
     }
 
     String getLogin(Request request, Response response) {
