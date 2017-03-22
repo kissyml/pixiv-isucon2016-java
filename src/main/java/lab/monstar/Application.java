@@ -59,8 +59,8 @@ public class Application {
     }
 
     Application() {
-//        Spark.ipAddress("127.0.0.1");
-//        Spark.port(8080);
+        Spark.ipAddress("127.0.0.1");
+        Spark.port(8080);
         Spark.staticFileLocation("/public");
         get("/initialize", this::getInitialize);
         get("/login", this::getLogin);
